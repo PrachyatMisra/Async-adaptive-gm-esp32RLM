@@ -1,0 +1,9 @@
+# Phase 1 - Paper Implementation
+# Minimal requirements for paper replication
+torch>=2.0
+transformers>=4.20.0
+datasets>=2.0.0
+numpy>=1.21.0
+scikit-learn>=1.0.0
+matplotlib>=3.5.0
+# For quick demo without torch, only need stdlib

@@ -1,0 +1,96 @@
+{
+  "title": "Edge-RLM Cognitive Reasoning & Dynamic Depth Benchmark",
+  "description": "Brain-like multi-clause deliberation dataset evaluating iterative recursive language modeling and adaptive early-exit halting dynamics.",
+  "theoretical_basis": {
+    "framework": "Recursive State Refinement (Neural ODE: dh/dt = R(h) - h)",
+    "convergence": "Banach Fixed-Point Contraction (K < 1)",
+    "adaptive_computation": "Cumulative Halting Mass Threshold (Sigma (1 - g_t) >= 0.900)"
+  },
+  "categories": [
+    {
+      "name": "Direct Perceptual / Intuitive Reasoning",
+      "expected_depth": "1-2 Steps (Rapid Heuristic Halting)",
+      "description": "Unambiguous semantic inputs where working memory reaches decision threshold almost instantaneously.",
+      "samples": [
+        {
+          "id": "cog_01",
+          "text": "System telemetry confirms all voltage rails nominal, temperature steady at 42C, and clock frequency locked.",
+          "label": 1,
+          "category": "system_diagnostics",
+          "expected_steps": 2,
+          "halting_rationale": "High semantic coherence; early gate saturation triggers ACT pre-arm at Step 1."
+        },
+        {
+          "id": "cog_02",
+          "text": "Catastrophic memory bus corruption detected, parity checks failed across all banks, immediate abort required.",
+          "label": 0,
+          "category": "system_diagnostics",
+          "expected_steps": 2,
+          "halting_rationale": "Strong negative keywords trigger fast classification without multi-hop deliberation."
+        },
+        {
+          "id": "cog_03",
+          "text": "An exceptionally flawless performance with brilliant execution and impeccable reliability.",
+          "label": 1,
+          "category": "sentiment_affect",
+          "expected_steps": 2,
+          "halting_rationale": "Uniform positive polarity allows rapid state attractor convergence."
+        }
+      ]
+    },
+    {
+      "name": "Cognitive Contrast & Nuance Resolution",
+      "expected_depth": "2-3 Steps (Attractor Settling)",
+      "description": "Inputs containing conflicting clauses where recursive iterations resolve contradiction and update working memory.",
+      "samples": [
+        {
+          "id": "cog_04",
+          "text": "Initial boot diagnostics indicated severe bus contention, but adaptive phase alignment successfully stabilized the link.",
+          "label": 1,
+          "category": "engineering_logic",
+          "expected_steps": 3,
+          "halting_rationale": "Step 1 encounters negative prior; Step 2 integrates adversative 'but'; Step 3 settles on positive resolution."
+        },
+        {
+          "id": "cog_05",
+          "text": "The prototype showed remarkable peak compute density, yet severe thermal throttling ultimately crippled real-world throughput.",
+          "label": 0,
+          "category": "engineering_logic",
+          "expected_steps": 3,
+          "halting_rationale": "Initial positive feature countered by terminal qualification; requires recurrent context mixing."
+        },
+        {
+          "id": "cog_06",
+          "text": "Although the first act wanders aimlessly with sluggish pacing, the climactic third act delivers unmatched cinematic power.",
+          "label": 1,
+          "category": "sentiment_affect",
+          "expected_steps": 3,
+          "halting_rationale": "Long-range contrast requires soft-mixing of intermediate hidden states across recursion steps."
+        }
+      ]
+    },
+    {
+      "name": "Deep Working Memory Deliberation",
+      "expected_depth": "3-4 Steps (Complex Deliberation)",
+      "description": "Multi-conditional inputs requiring deep recursive parameter reuse to resolve nested logical dependencies.",
+      "samples": [
+        {
+          "id": "cog_07",
+          "text": "While secondary battery voltage dropped below nominal under peak transmission load, internal resistance compensation prevented brownout reset and allowed uninterrupted task completion.",
+          "label": 1,
+          "category": "battery_droop_reasoning",
+          "expected_steps": 3,
+          "halting_rationale": "Three dependent clauses (droop -> compensation -> success) processed through shared block refinement."
+        },
+        {
+          "id": "cog_08",
+          "text": "Despite extensive multi-core synchronization guards and zero-copy buffers, unhandled mailbox race conditions produced silent payload corruption.",
+          "label": 0,
+          "category": "concurrency_verification",
+          "expected_steps": 4,
+          "halting_rationale": "Complex compound syntax demands maximum recursive refinement before confidence threshold crosses 0.900."
+        }
+      ]
+    }
+  ]
+}

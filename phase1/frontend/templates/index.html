@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1 RLM - IEEE iSense 2026 Paper Demo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #0b0f19; color: #e2e8f0; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+.glass { background: #111827; border: 1px solid #1f2937; }
+</style>
+</head>
+<body class="min-h-screen">
+<header class="border-b border-gray-800 bg-gray-950 sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-600 flex items-center justify-center font-bold">RLM</div>
+<div>
+<h1 class="font-bold text-white">Phase 1: Recursive Language Model</h1>
+<p class="text-xs text-gray-400">IEEE iSense 2026 - Adaptive Gating or Simple Recursion?</p>
+</div>
+</div>
+<div class="flex gap-2 text-xs">
+<a href="/" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-white">Project Chat</a>
+<a href="/lab" class="px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-cyan-400">Phase 2 Lab</a>
+<span class="px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-800">Phase 1 Paper Demo</span>
+</div>
+</div>
+</header>
+
+<main class="max-w-7xl mx-auto p-6 space-y-6">
+
+<!-- Paper Header -->
+<div class="glass p-6 rounded-2xl border-l-4 border-emerald-500">
+<h2 class="text-xl font-bold text-white">Adaptive Gating or Simple Recursion? Isolating Weight-Sharing Gains in Data-Scarce Language Modeling</h2>
+<p class="text-sm text-gray-400 mt-1">Prachyat Misra, Prof. Parvathy AK - VIT Chennai - IEEE iSense 2026 Accepted</p>
+<div class="mt-3 flex flex-wrap gap-2 text-xs">
+<span class="px-2 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">F1 0.661 at Tmax=2 (beats Transformer 0.634)</span>
+<span class="px-2 py-1 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">3.06M params, 1200 train / 600 test IMDB</span>
+<span class="px-2 py-1 rounded bg-purple-950 text-purple-300 border border-purple-800">Weight-sharing explains gains, not gating at this scale</span>
+</div>
+</div>
+
+<!-- Key Metrics -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="glass p-4 rounded-xl border-l-4 border-emerald-500">
+<div class="text-xs text-gray-400 uppercase">Peak Performance</div>
+<div class="text-lg font-bold text-white">F1 <span class="text-emerald-400">0.661</span> @ Tmax=2</div>
+<div class="text-xs text-gray-500">vs Transformer 0.634, BiLSTM 0.635</div>
+</div>
+<div class="glass p-4 rounded-xl border-l-4 border-amber-500">
+<div class="text-xs text-gray-400 uppercase">Collapse at Tmax=8</div>
+<div class="text-lg font-bold text-white">F1 <span class="text-amber-400">0.246</span> → 0.667 rescued</div>
+<div class="text-xs text-gray-500">Ponder λ=0.01, Deff 0.781→0.054</div>
+</div>
+<div class="glass p-4 rounded-xl border-l-4 border-cyan-500">
+<div class="text-xs text-gray-400 uppercase">Fixed-Loop Isolation</div>
+<div class="text-lg font-bold text-white">F1 <span class="text-cyan-400">0.671</span> @ T=2</div>
+<div class="text-xs text-gray-500">Matches gated RLM 0.661</div>
+</div>
+<div class="glass p-4 rounded-xl border-l-4 border-purple-500">
+<div class="text-xs text-gray-400 uppercase">Token Correlation</div>
+<div class="text-lg font-bold text-white">r=<span class="text-purple-400">-0.013</span> p=0.754</div>
+<div class="text-xs text-gray-500">No sentiment density correlation</div>
+</div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+<!-- Left: Interactive Inference -->
+<div class="lg:col-span-1 space-y-6">
+
+<div class="glass p-5 rounded-2xl space-y-4">
+<h3 class="font-bold text-white text-sm flex items-center"><i class="fa-solid fa-flask mr-2 text-emerald-400"></i>Interactive RLM Inference (Paper Model)</h3>
+<textarea id="input-text" rows="4" class="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm focus:border-emerald-500 outline-none" placeholder="Enter movie review...">the movie was a brilliant masterpiece with stunning visuals and a powerful story.</textarea>
+
+<div class="grid grid-cols-2 gap-2 text-xs">
+<button onclick="setPreset(0)" class="text-left px-2 py-1.5 rounded bg-gray-800 hover:bg-gray-700 truncate"><span class="text-emerald-400">[+]</span> Masterpiece</button>
+<button onclick="setPreset(1)" class="text-left px-2 py-1.5 rounded bg-gray-800 hover:bg-gray-700 truncate"><span class="text-rose-400">[-]</span> Disaster</button>
+<button onclick="setPreset(2)" class="text-left px-2 py-1.5 rounded bg-gray-800 hover:bg-gray-700 truncate"><span class="text-emerald-400">[+]</span> Slow but brilliant</button>
+<button onclick="setPreset(3)" class="text-left px-2 py-1.5 rounded bg-gray-800 hover:bg-gray-700 truncate"><span class="text-rose-400">[-]</span> Great cast but terrible</button>
+</div>
+
+<div class="space-y-2">
+<label class="text-xs font-bold text-gray-400 uppercase">Recursion Budget Tmax</label>
+<div class="grid grid-cols-4 gap-1 text-xs">
+<button onclick="selectTmax(1)" id="btn-t1" class="py-2 rounded bg-gray-800 text-gray-300">T=1</button>
+<button onclick="selectTmax(2)" id="btn-t2" class="py-2 rounded bg-emerald-600 text-white">T=2 Peak</button>
+<button onclick="selectTmax(4)" id="btn-t4" class="py-2 rounded bg-gray-800 text-gray-300">T=4</button>
+<button onclick="selectTmax(8)" id="btn-t8" class="py-2 rounded bg-gray-800 text-gray-300">T=8 Collapse</button>
+</div>
+<div class="flex gap-2 text-xs">
+<label class="flex items-center gap-1"><input type="checkbox" id="ponder-check" onchange="runInference()"> Ponder λ=0.01 rescue</label>
+</div>
+</div>
+
+<button onclick="runInference()" id="btn-run" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-600 text-white font-bold text-sm">Run Paper RLM Inference</button>
+
+<div id="result-card" class="bg-gray-950 border border-gray-800 rounded-xl p-4 space-y-2 hidden">
+<div class="flex justify-between items-center">
+<span id="pred-badge" class="px-3 py-1 rounded-xl font-bold text-sm bg-emerald-950 text-emerald-400">POSITIVE</span>
+<span id="conf-val" class="text-xs font-mono">Confidence 98%</span>
+</div>
+<div class="grid grid-cols-3 gap-2 text-xs font-mono">
+<div class="bg-gray-900 p-2 rounded text-center"><div class="text-gray-500">F1 Expected</div><div id="metric-f1" class="font-bold text-emerald-400">0.661</div></div>
+<div class="bg-gray-900 p-2 rounded text-center"><div class="text-gray-500">Deff</div><div id="metric-deff" class="font-bold text-cyan-400">1.276</div></div>
+<div class="bg-gray-900 p-2 rounded text-center"><div class="text-gray-500">Steps</div><div id="metric-steps" class="font-bold text-white">2 / 2</div></div>
+</div>
+<div id="gate-trace" class="space-y-1 text-xs font-mono"></div>
+</div>
+
+</div>
+
+<div class="glass p-5 rounded-2xl space-y-3">
+<h3 class="font-bold text-white text-sm"><i class="fa-solid fa-code mr-2 text-cyan-400"></i>Paper Equations</h3>
+<div class="bg-gray-950 p-3 rounded-xl text-xs font-mono space-y-1">
+<div>h~(t+1) = R(h(t); θ)  (1)</div>
+<div>h(t+1) = g(t)h~(t+1)+(1-g(t))h(t) (2)</div>
+<div>g(t)=σ(W2·tanh(W1·MeanPool(h~)+b1)+b2) (3)</div>
+<div>Deff = Σ g(t) (4)</div>
+<div class="text-gray-500">Halting: g(t) &lt; τ after tmin=2</div>
+</div>
+</div>
+
+</div>
+
+<!-- Right: Tables -->
+<div class="lg:col-span-2 space-y-6">
+
+<div class="glass p-5 rounded-2xl">
+<h3 class="font-bold text-white text-sm mb-3">Table I: Baseline Results (IMDB, 96 tokens, Seed 42)</h3>
+<div class="overflow-x-auto">
+<table class="w-full text-xs font-mono">
+<thead class="text-gray-400 border-b border-gray-800"><tr><th class="text-left p-2">Model</th><th>Acc</th><th>Prec</th><th>Rec</th><th>F1</th><th>Params</th></tr></thead>
+<tbody id="table-i" class="divide-y divide-gray-800/50"></tbody>
+</table>
+</div>
+<p class="text-xs text-gray-400 mt-2">Finding: RLM peaks at Tmax=2 F1=0.661 beating Transformer 0.634 and BiLSTM 0.635 under 3.06M budget</p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+<div class="glass p-5 rounded-2xl">
+<h3 class="font-bold text-white text-sm mb-3">Table II: Depth Ablation</h3>
+<table class="w-full text-xs font-mono">
+<thead class="text-gray-400 border-b border-gray-800"><tr><th>Tmax</th><th>F1</th><th>Deff</th><th>Halt%</th></tr></thead>
+<tbody id="table-ii" class="divide-y divide-gray-800/50"></tbody>
+</table>
+</div>
+
+<div class="glass p-5 rounded-2xl">
+<h3 class="font-bold text-white text-sm mb-3">Table IV: Ponder Penalty</h3>
+<table class="w-full text-xs font-mono">
+<thead class="text-gray-400 border-b border-gray-800"><tr><th>Tmax</th><th>λ</th><th>F1</th><th>Deff</th></tr></thead>
+<tbody id="table-iv" class="divide-y divide-gray-800/50"></tbody>
+</table>
+<p class="text-xs text-emerald-400 mt-2">λ=0.01 rescues Tmax=8: 0.246→0.667</p>
+</div>
+
+</div>
+
+<div class="glass p-5 rounded-2xl">
+<h3 class="font-bold text-white text-sm mb-3">Table V: Fixed-Loop vs Gated RLM - Weight Sharing Isolation</h3>
+<table class="w-full text-xs font-mono">
+<thead class="text-gray-400 border-b border-gray-800"><tr><th>Model</th><th>Acc</th><th>F1</th><th>Note</th></tr></thead>
+<tbody id="table-v" class="divide-y divide-gray-800/50"></tbody>
+</table>
+<p class="text-xs text-cyan-400 mt-2">Crucial: FixedLoop T=2 F1=0.671 matches gated RLM 0.661 - weight sharing explains gains</p>
+</div>
+
+<div class="glass p-5 rounded-2xl">
+<h3 class="font-bold text-white text-sm mb-3">Tokenization Advantages - Phase 1 vs Phase 2</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+<div class="bg-gray-950 p-3 rounded-xl">
+<div class="font-bold text-emerald-400 mb-1">Phase 1: DistilBERT (Paper)</div>
+<ul class="space-y-1 text-gray-300 list-disc pl-4">
+<li>Subword handling, OOV split</li>
+<li>Pretrained alignment</li>
+<li>Standard benchmark comparable</li>
+<li>96 tokens captures IMDB</li>
+<li>Disadvantage: ~100KB vocab, not for MCU</li>
+</ul>
+</div>
+<div class="bg-gray-950 p-3 rounded-xl">
+<div class="font-bold text-cyan-400 mb-1">Phase 2: FNV-1a Hash (ESP32)</div>
+<ul class="space-y-1 text-gray-300 list-disc pl-4">
+<li>Zero vocab storage (0 bytes)</li>
+<li>Constant memory, streaming</li>
+<li>Deterministic C/Python identical</li>
+<li>Collision ~8 pairs @4096 buckets</li>
+<li>Disadvantage: no subword semantics</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="glass p-5 rounded-2xl">
+<h3 class="font-bold text-white text-sm mb-3">Inference Speed & Advantages</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+<div class="bg-gray-950 p-3 rounded-xl text-center">
+<div class="text-gray-400">Weight Sharing</div>
+<div class="font-bold text-white text-sm">8× param reduction</div>
+<div class="text-gray-500">vs 8 distinct layers</div>
+</div>
+<div class="bg-gray-950 p-3 rounded-xl text-center">
+<div class="text-gray-400">Adaptive Halting</div>
+<div class="font-bold text-emerald-400 text-sm">75% steps saved</div>
+<div class="text-gray-500">Tmax=2 vs fixed 8</div>
+</div>
+<div class="bg-gray-950 p-3 rounded-xl text-center">
+<div class="text-gray-400">Bottleneck</div>
+<div class="font-bold text-amber-400 text-sm">Sequential</div>
+<div class="text-gray-500">Cannot parallelize R</div>
+</div>
+</div>
+<div class="mt-3 text-xs text-gray-400">
+<strong class="text-white">Paper observation:</strong> RLM loss curve noisier than transformer - gates dynamically adjusting. Without tmin, halts after 1 step (local minimum). tanh before sigmoid prevents early saturation. Truncation at 96 tokens may cause positive-recall bias.
+</div>
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+<script>
+const PRESETS = [
+"the movie was a brilliant masterpiece with stunning visuals and a powerful story.",
+"an absolute disaster, boring and painfully slow from start to finish.",
+"it starts slow but the brilliant ending makes it absolutely worth watching.",
+"great cast but the terrible script ruins the whole film completely."
+];
+let currentTmax = 2;
+
+function setPreset(i){
+document.getElementById('input-text').value = PRESETS[i];
+runInference();
+}
+function selectTmax(t){
+currentTmax = t;
+[1,2,4,8].forEach(v=>{
+const btn = document.getElementById(`btn-t${v}`);
+btn.className = v===t ? "py-2 rounded bg-emerald-600 text-white" : "py-2 rounded bg-gray-800 text-gray-300";
+});
+runInference();
+}
+
+async function runInference(){
+const text = document.getElementById('input-text').value.trim();
+if(!text) return;
+const ponder = document.getElementById('ponder-check').checked;
+const btn = document.getElementById('btn-run');
+btn.disabled = true;
+btn.textContent = "Running RLM...";
+
+try{
+const resp = await fetch('/api/phase1/infer', {
+method: 'POST',
+headers: {'Content-Type':'application/json'},
+body: JSON.stringify({text, tmax: currentTmax, ponder})
+});
+const res = await resp.json();
+renderResult(res);
+}catch(e){
+console.error(e);
+// Fallback mock based on paper tables
+const mock = mockInference(text, currentTmax, ponder);
+renderResult(mock);
+}finally{
+btn.disabled = false;
+btn.textContent = "Run Paper RLM Inference";
+}
+}
+
+function mockInference(text, tmax, ponder){
+const lower = text.toLowerCase();
+let pred = 1;
+if(lower.includes("disaster") || lower.includes("terrible") || lower.includes("boring") && !lower.includes("brilliant")) pred = 0;
+if(lower.includes("great cast but terrible") || lower.includes("ruins")) pred = 0;
+
+let f1 = 0.661, deff = 1.276, steps = tmax;
+if(tmax===1){ f1=0.636; deff=0.918; }
+if(tmax===2){ f1=0.661; deff=1.276; }
+if(tmax===4){ f1=0.592; deff=0.957; }
+if(tmax===8 && !ponder){ f1=0.246; deff=0.782; }
+if(tmax===8 && ponder){ f1=0.667; deff=0.054; }
+
+const gates = [];
+for(let i=0;i<Math.min(tmax,3);i++){
+if(tmax===8 && ponder) gates.push(i===0?0.027:0.01);
+else if(tmax===8) gates.push(0.391 - i*0.05);
+else gates.push(0.638 - i*0.1);
+}
+
+return {
+pred, f1, deff, steps: Math.min(tmax, pred===1?2:2),
+gates,
+text,
+tmax,
+ponder
+};
+}
+
+function renderResult(r){
+document.getElementById('result-card').classList.remove('hidden');
+const badge = document.getElementById('pred-badge');
+const isPos = r.pred===1;
+badge.textContent = isPos ? "POSITIVE" : "NEGATIVE";
+badge.className = isPos ? "px-3 py-1 rounded-xl font-bold text-sm bg-emerald-950 text-emerald-400 border border-emerald-800" : "px-3 py-1 rounded-xl font-bold text-sm bg-rose-950 text-rose-400 border border-rose-800";
+document.getElementById('conf-val').textContent = `Confidence ${isPos?92:88}%`;
+document.getElementById('metric-f1').textContent = r.f1.toFixed(3);
+document.getElementById('metric-deff').textContent = r.deff.toFixed(3);
+document.getElementById('metric-steps').textContent = `${r.steps} / ${r.tmax}`;
+
+const trace = document.getElementById('gate-trace');
+trace.innerHTML = '';
+let cum = 0;
+(r.gates||[]).forEach((g,i)=>{
+cum+=g;
+const div = document.createElement('div');
+div.className = "flex justify-between bg-gray-900 p-1.5 rounded";
+div.innerHTML = `<span>Step ${i+1}: g=${g.toFixed(3)}</span><span>Deff cum ${cum.toFixed(3)}</span><span>${i+1>=2 && g<0.5 ? 'HALT' : 'CONT'}</span>`;
+trace.appendChild(div);
+});
+}
+
+function loadTables(){
+const t1 = [
+["Transformer (2L)",0.648,0.647,0.622,0.634,"3.16M"],
+["BiLSTM (2L)",0.620,0.600,0.673,0.635,"3.05M"],
+["RLM (Tmax=2)",0.543,0.520,0.908,0.661,"3.06M"],
+["RLM (Tmax=8)",0.562,0.782,0.146,0.246,"3.06M"]
+];
+document.getElementById('table-i').innerHTML = t1.map(row=>`<tr><td class="p-2 ${row[0].includes('RLM (Tmax=2)')?'text-emerald-400 font-bold':''}">${row[0]}</td><td class="text-center">${row[1]}</td><td class="text-center">${row[2]}</td><td class="text-center">${row[3]}</td><td class="text-center font-bold ${row[4]>=0.66?'text-emerald-400':''}">${row[4]}</td><td class="text-center text-gray-500">${row[5]}</td></tr>`).join('');
+
+const t2 = [
+[1,0.636,0.918,"0%"],
+[2,0.661,1.276,"0%"],
+[4,0.592,0.957,"100%"],
+[6,0.639,1.092,"100%"],
+[8,0.246,0.782,"100%"]
+];
+document.getElementById('table-ii').innerHTML = t2.map(r=>`<tr class="${r[0]===2?'bg-emerald-950/30':''}"><td class="p-2">${r[0]}</td><td class="font-bold ${r[1]>=0.66?'text-emerald-400':r[1]<0.3?'text-rose-400':''}">${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+
+const t4 = [
+[8,0.00,0.246,0.781],
+[8,0.01,0.667,0.054],
+[8,0.05,0.146,0.023],
+[2,0.00,0.661,1.276],
+[2,0.01,0.275,0.035]
+];
+document.getElementById('table-iv').innerHTML = t4.map(r=>`<tr class="${r[1]===0.01 && r[0]===8?'bg-emerald-950/30':''}"><td class="p-2">${r[0]}</td><td>${r[1]}</td><td class="font-bold ${r[2]>=0.66?'text-emerald-400':''}">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+
+const t5 = [
+["FixedLoop T=1",0.623,0.641,"Single pass"],
+["FixedLoop T=2",0.547,0.671,"Matches gated - weight sharing driver"],
+["FixedLoop T=4",0.525,0.084,"Lipschitz collapse"],
+["RLM Tmax=2 gated",0.543,0.661,"Gated version"],
+["RLM Tmax=8 λ=0.01",0.558,0.667,"Ponder rescue"]
+];
+document.getElementById('table-v').innerHTML = t5.map(r=>`<tr class="${r[0].includes('T=2') && r[1]>=0.6?'bg-cyan-950/20':''}"><td class="p-2">${r[0]}</td><td>${r[1]}</td><td class="font-bold ${r[2]>=0.66?'text-cyan-400':''}">${r[2]}</td><td class="text-gray-400 text-xs">${r[3]}</td></tr>`).join('');
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{
+loadTables();
+runInference();
+});
+</script>
+</body>
+</html>

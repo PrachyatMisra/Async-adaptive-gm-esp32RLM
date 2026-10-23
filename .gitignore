@@ -1,0 +1,28 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Native and HDL verification outputs
+firmware/test/host_harness
+phase2/firmware/test/host_harness
+**/host_harness
+tools/out/mermaid_cache/
+verification/verilog/*.vvp
+verification/verilog/*.vcd
+
+# PlatformIO build output
+.pio/
+
+# Local analysis caches and generated graph indexes
+graphify-out/cache/
+
+# OS/editor files
+.DS_Store
+.vscode/
+.aider*
+
+# Frontend dependencies and production bundles
+host/frontend/node_modules/
+host/frontend/dist/

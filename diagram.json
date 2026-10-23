@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "author": "Prachyat Misra",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "type": "wokwi-esp32-devkit-v1",
+      "id": "esp32",
+      "top": 0,
+      "left": 0,
+      "attrs": { "env": "wokwi" }
+    },
+    {
+      "type": "wokwi-potentiometer",
+      "id": "battery_control",
+      "top": 18,
+      "left": 250,
+      "attrs": { "value": "10000" }
+    }
+  ],
+  "connections": [
+    [ "battery_control:VCC", "esp32:3V3", "red", [] ],
+    [ "battery_control:GND", "esp32:GND.1", "black", [] ],
+    [ "battery_control:SIG", "esp32:34", "green", [] ]
+  ],
+  "dependencies": {}
+}
